@@ -39,7 +39,13 @@ class Api::PostsController < ApplicationController
     end
 
     def return_parsed_response(url)
-      HTTParty.get(url).parsed_response 
+      begin
+      response = HTTParty.get(url).parsed_response 
+    rescue => error
+      return render json: error
+    else
+      return response
+    end
     end
     
     threads = []
