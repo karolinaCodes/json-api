@@ -19,9 +19,11 @@ class Api::PostsController < ApplicationController
      end
 
     if parsed_tags.length == 1
+
+      #TODO: use return_parsed_response here
       begin
         response= HTTParty.get("https://api.hatchways.io/assessment/blog/posts?tag=#{tags}")
-        posts = JSON.parse(response.body)["posts"]
+        posts = json(response.body)["posts"]
       rescue => error
         return render json: error
       else
@@ -41,16 +43,6 @@ class Api::PostsController < ApplicationController
         end
       end
 
-    end
-
-    def return_parsed_response(url)
-      begin
-      response = HTTParty.get(url).parsed_response 
-    rescue => error
-      return render json: error
-    else
-      return response
-    end
     end
     
     threads = []
