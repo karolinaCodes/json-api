@@ -5,7 +5,7 @@ class Api::PostsController < ApplicationController
     valid_values = ['id', 'reads', 'likes', 'popularity', 'desc', 'asc'];
 
     if !tags
-      return render status:400, json: {error: 'The tag parameter is required'}
+      return render status:400, json: {error: 'Tags parameter is required'}
      end
 
     parsed_tags = tags.split(',');

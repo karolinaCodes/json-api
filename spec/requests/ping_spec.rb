@@ -9,8 +9,8 @@ describe "ping route", :type => :request do
     expect(response.code).to eq("200")
   end
 
-  it 'returns status code 400 when route is incorrect' do
+  it 'returns status code 404 when route is incorrect' do
     get '/api/pin'
-    expect(response.code).to eq("400")
+    expect(response.code).to eq("404")
   end
 end
