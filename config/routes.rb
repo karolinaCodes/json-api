@@ -5,5 +5,5 @@ Rails.application.routes.draw do
       get "/posts(/:tags(/:sortBy(/:direction)))", to: "posts#posts"
   end
   
-  get '*unmatched_route', to: 'error#not_found'
+  get "*unmatched_route", to: "error#not_found"
 end
