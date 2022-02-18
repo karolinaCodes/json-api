@@ -1,14 +1,14 @@
 class Api::PostsController < ApplicationController
   include HTTParty
-  def show 
+
+  def posts 
     tags, sortBy, direction = params.values_at(:tags, :sortBy, :direction)
     valid_values = ['id', 'reads', 'likes', 'popularity', 'desc', 'asc'];
 
+    # error handling for params
     if !tags
       return render status:400, json: {error: 'Tags parameter is required'}
     end
-
-    parsed_tags = tags.split(',');
 
     if !valid_values.include? sortBy and sortBy
       return render status:400, json: {error: 'sortBy parameter is invalid'}
@@ -17,6 +17,9 @@ class Api::PostsController < ApplicationController
     if !valid_values.include? direction and direction
        return render status:400, json: {error: 'direction parameter is invalid'}
     end
+
+    parsed_tags = tags.split(',');
+    
 
     if parsed_tags.length == 1
       #TODO: use return_parsed_response here

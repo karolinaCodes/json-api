@@ -12,12 +12,12 @@ class ApplicationController < ActionController::API
 
   def return_parsed_response(url)
     begin
-    response = cached_result(url).parsed_response 
-  rescue => error
-    return render json: error
-  else
-    return response
+      response = cached_result(url).parsed_response 
+    rescue => error
+     return render json: error
+    else
+      return response
+    end
   end
-  end
-
+  
 end
