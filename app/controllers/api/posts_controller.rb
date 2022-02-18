@@ -24,18 +24,13 @@ class Api::PostsController < ApplicationController
     if parsed_tags.length == 1
       #TODO: use return_parsed_response here
       begin
-        posts = json(cached_result("https://api.hatchways.io/assessment/blog/posts?tag=#{tags}").body)["posts"]
+        posts = json(cached_result('https://api.hatchways.io/assessment/blog/posts?tag=#{tags}').body)['posts']
       rescue => error
         return render json: error
       else
         # if a sortBy value is passed, sort depending on the direction
         if sortBy
-          if direction == "desc"
-           posts=posts.sort_by{ |obj| obj[sortBy] }.reverse
-          else
-           posts= posts.sort_by{ |obj| obj[sortBy] }
-          end
-          return render json: {posts: posts}
+          return render json: {posts: sortPosts(posts, sortBy, direction)}
         else
           return render json: {posts: posts}
         end
@@ -47,25 +42,20 @@ class Api::PostsController < ApplicationController
       parsed_responses = []
   
       parsed_tags.each {|tag|  threads << Thread.new { 
-        parsed_responses << return_parsed_response("https://api.hatchways.io/assessment/blog/posts?tag=#{tag}")
+        parsed_responses << return_parsed_response('https://api.hatchways.io/assessment/blog/posts?tag=#{tag}')
       }}
 
       threads.each(&:join)
-      merged_arrays = parsed_responses[0]["posts"] + parsed_responses[1]["posts"]
+      merged_arrays = parsed_responses[0]['posts'] + parsed_responses[1]['posts']
     rescue => error
      return render json: error
     else
 
      # if a sortBy value is passed, sort depending on the direction
       if sortBy
-       if direction == "desc"
-        posts=merged_arrays.sort_by{ |obj| obj[sortBy] }.reverse
-       else
-        posts= merged_arrays.sort_by{ |obj| obj[sortBy] }
-       end
-        return render json: {posts: posts.uniq}
+        return render json: {posts: sortPosts(merged_arrays, sortBy, direction).uniq}
       else
-      render json: {posts: merged_arrays.uniq}
+        render json: {posts: merged_arrays.uniq}
       end
     end
 

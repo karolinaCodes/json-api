@@ -5,7 +5,7 @@ class ApplicationController < ActionController::API
   end
 
   def cached_result url
-    Rails.cache.fetch("response", expires_in: 1.day) do
+    Rails.cache.fetch('response', expires_in: 1.day) do
       HTTParty.get(url)
     end
   end
@@ -17,6 +17,14 @@ class ApplicationController < ActionController::API
      return render json: error
     else
       return response
+    end
+  end
+
+  def sortPosts posts, sortBy, direction
+    if direction == 'desc'
+      posts.sort_by{ |obj| obj[sortBy] }.reverse
+    else
+      posts.sort_by{ |obj| obj[sortBy] }
     end
   end
   
