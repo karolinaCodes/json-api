@@ -6,24 +6,22 @@ class Api::PostsController < ApplicationController
 
     if !tags
       return render status:400, json: {error: 'Tags parameter is required'}
-     end
+    end
 
     parsed_tags = tags.split(',');
 
     if !valid_values.include? sortBy and sortBy
       return render status:400, json: {error: 'sortBy parameter is invalid'}
-     end
+    end
  
-     if !valid_values.include? direction and direction
+    if !valid_values.include? direction and direction
        return render status:400, json: {error: 'direction parameter is invalid'}
-     end
+    end
 
     if parsed_tags.length == 1
-      # Rails.cache.fetch("posts", :expires => 1.hour) do
       #TODO: use return_parsed_response here
       begin
-         response= HTTParty.get("https://api.hatchways.io/assessment/blog/posts?tag=#{tags}")
-        posts = json(response.body)["posts"]
+        posts = json(cached_result("https://api.hatchways.io/assessment/blog/posts?tag=#{tags}").body)["posts"]
       rescue => error
         return render json: error
       else
