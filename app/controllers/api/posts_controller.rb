@@ -23,7 +23,7 @@ class Api::PostsController < ApplicationController
     # single tag
     if parsed_tags.length == 1
       posts = json(cached_result("https://api.hatchways.io/assessment/blog/posts?tag=#{tags}").body)["posts"]
-      
+
       if sortBy
         return render json: {posts: sortPosts(posts, sortBy, direction)}
       else
@@ -33,6 +33,7 @@ class Api::PostsController < ApplicationController
 
     # muliple tags
     begin
+      # make concurrent api requests using threads
       threads = []
       parsed_responses = []
   
@@ -41,14 +42,14 @@ class Api::PostsController < ApplicationController
       }}
 
       threads.each(&:join)
-      merged_arrays = parsed_responses[0]["posts"] + parsed_responses[1]["posts"]
+      merged_posts = parsed_responses[0]["posts"] + parsed_responses[1]["posts"]
     rescue => error
       return render json: error
     else
       if sortBy
-        return render json: {posts: sortPosts(merged_arrays, sortBy, direction).uniq}
+        return render json: {posts: sortPosts(merged_posts, sortBy, direction).uniq}
       else
-        render json: {posts: merged_arrays.uniq}
+        render json: {posts: merged_posts.uniq}
       end
     end
 
