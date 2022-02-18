@@ -69,12 +69,12 @@ class Api::PostsController < ApplicationController
         posts= merged_arrays.sort_by{ |obj| obj[sortBy] }
        end
 
-       return render json: {posts: posts}
+       return render json: {posts: posts.uniq}
 
      else
-      render json: {posts: merged_arrays.uniq!}
+      render json: {posts: merged_arrays.uniq}
      end
    end
-   
+
   end 
 end
