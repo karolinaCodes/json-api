@@ -4,21 +4,15 @@ class ApplicationController < ActionController::API
     JSON.parse(body)
   end
 
+  # cache result of api call and return cached result
   def cached_result url
-    Rails.cache.fetch("response", expires_in: 1.day) do
-      HTTParty.get(url)
-    end
-  end
-
-  def return_parsed_response url
     begin
-      response = cached_result(url)
-      # puts response
-    rescue => error
-      return render json: error
-    else
-      return response
-    end
+     Rails.cache.fetch("response", expires_in: 1.day) do
+       HTTParty.get(url)
+     end
+     rescue => error
+       return render json: error
+     end
   end
 
   def sortPosts posts, sortBy, direction

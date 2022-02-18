@@ -20,36 +20,30 @@ class Api::PostsController < ApplicationController
 
     parsed_tags = tags.split(",");
 
+    # single tag
     if parsed_tags.length == 1
-      begin
-        posts = json(return_parsed_response("https://api.hatchways.io/assessment/blog/posts?tag=#{tags}").body)["posts"]
-        # puts posts
-      rescue => error
-        return render json: error
-      else
-        # if a sortBy value is passed, sort depending on direction
+      posts = json(cached_result("https://api.hatchways.io/assessment/blog/posts?tag=#{tags}").body)["posts"]
         if sortBy
           return render json: {posts: sortPosts(posts, sortBy, direction)}
         else
           return render json: {posts: posts}
         end
-      end
     end
 
+    # muliple tags
     begin
       threads = []
       parsed_responses = []
   
       parsed_tags.each {|tag|  threads << Thread.new { 
-        parsed_responses << return_parsed_response("https://api.hatchways.io/assessment/blog/posts?tag=#{tag}")
+        parsed_responses << cached_result("https://api.hatchways.io/assessment/blog/posts?tag=#{tag}")
       }}
 
       threads.each(&:join)
       merged_arrays = parsed_responses[0]["posts"] + parsed_responses[1]["posts"]
     rescue => error
-     return render json: error
+      return render json: error
     else
-     # if a sortBy value is passed, sort depending on direction
       if sortBy
         return render json: {posts: sortPosts(merged_arrays, sortBy, direction).uniq}
       else
