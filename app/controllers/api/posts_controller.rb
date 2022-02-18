@@ -23,11 +23,12 @@ class Api::PostsController < ApplicationController
     # single tag
     if parsed_tags.length == 1
       posts = json(cached_result("https://api.hatchways.io/assessment/blog/posts?tag=#{tags}").body)["posts"]
-        if sortBy
-          return render json: {posts: sortPosts(posts, sortBy, direction)}
-        else
-          return render json: {posts: posts}
-        end
+      
+      if sortBy
+        return render json: {posts: sortPosts(posts, sortBy, direction)}
+      else
+        return render json: {posts: posts}
+      end
     end
 
     # muliple tags

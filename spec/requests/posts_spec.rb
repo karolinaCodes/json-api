@@ -46,6 +46,7 @@ describe "posts route", :type => :request do
     expect(response.code).to eq("200")
   end
 
+  # single tag
   it 'should return json object with posts containing tag specified when one tag parameter passed' do
     get '/api/posts/tech'
     tags_per_post= JSON.parse(response.body)["posts"].map {|post| post["tags"]}
@@ -55,21 +56,6 @@ describe "posts route", :type => :request do
       end }
     expect(includes).to eq(true)
   end
-
-  it 'should return json object with posts containing tags specified when multiple tags specified' do
-    get '/api/posts/science,tech'
-    tags_per_post= JSON.parse(response.body)["posts"].map {|post| post["tags"]}
-
-    includes= true
-    tags_per_post.each {|tag_arr| 
-    if !(tag_arr.include?("science") || tag_arr.include?("tech"))
-      includes=false
-      end
-    }
-    expect(includes).to eq(true)
-  end
-
-  #one tag
 
   it 'should return posts sorted by sortBy parameter in ascending order when specified if one tag is specified' do
     get '/api/posts/science/id/asc'
@@ -89,7 +75,19 @@ describe "posts route", :type => :request do
     expect(sortBy_values).to eq(sortBy_values.sort)
   end
 
-  #multiple tags
+  # multiple tags
+  it 'should return json object with posts containing tags specified when multiple tags are passed' do
+    get '/api/posts/science,tech'
+    tags_per_post= JSON.parse(response.body)["posts"].map {|post| post["tags"]}
+
+    includes= true
+    tags_per_post.each {|tag_arr| 
+    if !(tag_arr.include?("science") || tag_arr.include?("tech"))
+      includes=false
+      end
+    }
+    expect(includes).to eq(true)
+  end
 
   it 'should return posts sorted by sortBy parameter in ascending order when specified and multiple tags are passed' do
     get '/api/posts/science,tech/popularity/asc'
@@ -97,20 +95,17 @@ describe "posts route", :type => :request do
     expect(sortBy_values).to eq(sortBy_values.sort)
   end
 
-
   it 'should return posts sorted by sortBy parameter in descending order when specified and multiple tags are passed' do
     get '/api/posts/science,tech/id/desc'
     sortBy_values= JSON.parse(response.body)["posts"].map {|post| post["id"]}
     expect(sortBy_values).to eq(sortBy_values.sort.reverse)
   end
 
-
   it 'should return posts sorted by sortBy parameter in ascending order if direction unspecified and multiple tags are passed' do
     get '/api/posts/science,tech/reads/'
     sortBy_values= JSON.parse(response.body)["posts"].map {|post| post["reads"]}
     expect(sortBy_values).to eq(sortBy_values.sort)
   end
-
 
   it 'should return non-duplicate posts when multiple tags parameters specified' do
     get '/api/posts/science,tech/likes/asc'
