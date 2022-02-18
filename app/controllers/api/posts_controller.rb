@@ -3,6 +3,11 @@ class Api::PostsController < ApplicationController
   def show 
     tags, sortBy, direction = params.values_at(:tags, :sortBy, :direction)
     valid_values = ['id', 'reads', 'likes', 'popularity', 'desc', 'asc'];
+
+    if !tags
+      return render status:400, json: {error: 'The tag parameter is required'}
+     end
+
     parsed_tags = tags.split(',');
 
     if !valid_values.include? sortBy and sortBy
@@ -63,6 +68,5 @@ class Api::PostsController < ApplicationController
     
     
     render json: merged_arrays.uniq!
-    #render json: {success: parsed_tags} 
   end 
 end
