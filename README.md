@@ -1,26 +1,24 @@
-# README
+# Installation Instructions
 
-How to start appication\*
+## Follow these easy steps to install and start the API:
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+1. Ensure that you have Rails v5.0.7.2 and Ruby v2.7.0p0 installed.
 
-Things you may want to cover:
+2. After cloning the repository, run `bundle install` in the root of the repository to install dependencies.
 
-- Ruby version
+3. Start Rails Server by running: `rails s`
 
-- System dependencies
+## Testing Instructions
 
-- Configuration
+Testing is done through the Rpsec framework.
+To run the specs run: `bundle exec rpsec`
 
-- Database creation
+## Dependencies:
 
-- Database initialization
-
-- How to run the test suite
-
-- Services (job queues, cache servers, search engines, etc.)
-
-- Deployment instructions
-
-- ...
+- Rails 5.0.7.2
+- Ruby 2.7.0p0
+- Rspec-rails 3.5
+- HTTParty 0.20.0
+- Sqlite3 1.4.2
+- Nokogiri
+- Thread
