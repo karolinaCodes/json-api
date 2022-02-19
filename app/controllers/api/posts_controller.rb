@@ -5,8 +5,7 @@ class Api::PostsController < ApplicationController
     tags, sortBy, direction = params.values_at(:tags, :sortBy, :direction)
     valid_values = ["id", "reads", "likes", "popularity", "desc", "asc"];
 
-    # error handling for params
-    if !tags
+    if tags.blank?
       return render status:400, json: {error: "Tags parameter is required"}
     end
 
