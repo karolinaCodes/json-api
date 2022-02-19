@@ -1,6 +1,6 @@
 # Installation Instructions
 
-## Follow these easy steps to install and start the API:
+## Follow these steps to install and start the API:
 
 1. Ensure that you have Rails v5.0.7.2 and Ruby v2.7.0p0 installed.
 
