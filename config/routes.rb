@@ -7,3 +7,5 @@ Rails.application.routes.draw do
   
   get "*unmatched_route", to: "error#not_found"
 end
+
+# posts?tags=history&sortBy=popularity&direction=asc

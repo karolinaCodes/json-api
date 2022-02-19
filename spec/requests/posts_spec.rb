@@ -2,53 +2,53 @@ require 'rails_helper'
 
 describe "posts route", :type => :request do
   it 'should return status code 200 when route is correct' do
-    get '/api/posts/tech'
+    get '/api/posts?tags=tech'
     expect(response.code).to eq("200")
   end
 
   it 'should return status code 404 when route is incorrect' do
-    get '/api/post/tech'
+    get '/api/post?tags=tech'
     expect(response.code).to eq("404")
   end
 
   it 'should return status code 400 if tags parameter is not present' do
-    get '/api/posts/'
+    get '/api/posts'
     expect(response.code).to eq("400")
   end
 
   it 'should return correct error message if tags parameter is not present' do
-    get '/api/posts/'
+    get '/api/posts'
     expect(response.body).to eq({error:"Tags parameter is required"}.to_json)
   end
 
   it 'should return status code 400 if sortBy parameter is not valid' do
-    get '/api/posts/science/date'
+    get '/api/posts?tags=science&sortBy=date'
     expect(response.code).to eq("400")
   end
 
   it 'should return correct error message if sortBy parameter is not valid' do
-    get '/api/posts/science/date'
+    get '/api/posts?tags=science&sortBy=date'
     expect(response.body).to eq({error:"sortBy parameter is invalid"}.to_json)
   end
 
   it 'should return status code 400 if direction parameter is not valid' do
-    get '/api/posts/science/likes/horizontal'
+    get '/api/posts?tags=science&sortBy=likes&direction=horizontal'
     expect(response.code).to eq("400")
   end
 
   it 'should return correct error message if direction parameter is not valid' do
-    get '/api/posts/science/likes/horizontal'
+    get '/api/posts?tags=science&sortBy=likes&direction=horizontal'
     expect(response.body).to eq({error:"direction parameter is invalid"}.to_json)
   end
 
   it 'should return status code 200 when all query parameters are present' do
-    get '/api/posts/science,tech/likes/asc'
+    get '/api/posts?tags=science,tech&sortBy=likes&direction=asc'
     expect(response.code).to eq("200")
   end
 
   # single tag
   it 'should return json object with posts containing tag specified when one tag parameter passed' do
-    get '/api/posts/tech'
+    get '/api/posts?tags=tech'
     tags_per_post= JSON.parse(response.body)["posts"].map {|post| post["tags"]}
     includes= true
     tags_per_post.each {|tag_arr| if !tag_arr.include? "tech"
@@ -58,26 +58,26 @@ describe "posts route", :type => :request do
   end
 
   it 'should return posts sorted by sortBy parameter in ascending order when specified if one tag is specified' do
-    get '/api/posts/science/id/asc'
+    get '/api/posts?tags=science&sortBy=id&direction=asc'
     sortBy_values= JSON.parse(response.body)["posts"].map {|post| post["id"]}
     expect(sortBy_values).to eq(sortBy_values.sort)
   end
 
   it 'should return posts sorted by sortBy parameter in descending order when specified if one tag is specified' do
-    get '/api/posts/science/reads/desc'
+    get '/api/posts?tags=science&sortBy=reads&direction=desc'
     sortBy_values= JSON.parse(response.body)["posts"].map {|post| post["reads"]}
     expect(sortBy_values).to eq(sortBy_values.sort.reverse)
   end
 
   it 'should return posts sorted by sortBy parameter in ascending order if direction unspecified if one tag is specified' do
-    get '/api/posts/science/likes'
+    get '/api/posts?tags=science&sortBy=likes'
     sortBy_values= JSON.parse(response.body)["posts"].map {|post| post["likes"]}
     expect(sortBy_values).to eq(sortBy_values.sort)
   end
 
   # multiple tags
   it 'should return json object with posts containing tags specified when multiple tags are passed' do
-    get '/api/posts/science,tech'
+    get '/api/posts/?tags=science,tech'
     tags_per_post= JSON.parse(response.body)["posts"].map {|post| post["tags"]}
 
     includes= true
@@ -90,25 +90,25 @@ describe "posts route", :type => :request do
   end
 
   it 'should return posts sorted by sortBy parameter in ascending order when specified and multiple tags are passed' do
-    get '/api/posts/science,tech/popularity/asc'
+    get '/api/posts?tags=science,tech&sortBy=popularity&direction=asc'
     sortBy_values= JSON.parse(response.body)["posts"].map {|post| post["popularity"]}
     expect(sortBy_values).to eq(sortBy_values.sort)
   end
 
   it 'should return posts sorted by sortBy parameter in descending order when specified and multiple tags are passed' do
-    get '/api/posts/science,tech/id/desc'
+    get '/api/posts?tags=science,tech&sortBy=id&direction=desc'
     sortBy_values= JSON.parse(response.body)["posts"].map {|post| post["id"]}
     expect(sortBy_values).to eq(sortBy_values.sort.reverse)
   end
 
   it 'should return posts sorted by sortBy parameter in ascending order if direction unspecified and multiple tags are passed' do
-    get '/api/posts/science,tech/reads/'
+    get '/api/posts?tags=science,tech&sortBy=reads'
     sortBy_values= JSON.parse(response.body)["posts"].map {|post| post["reads"]}
     expect(sortBy_values).to eq(sortBy_values.sort)
   end
 
   it 'should return non-duplicate posts when multiple tags parameters specified' do
-    get '/api/posts/science,tech/likes/asc'
+    get '/api/posts?tags=science,tech&sortBy=likes&direction=desc'
     ids= JSON.parse(response.body)["posts"].map {|post| post["id"]}
     expect(ids).to eq(ids.uniq)
   end
